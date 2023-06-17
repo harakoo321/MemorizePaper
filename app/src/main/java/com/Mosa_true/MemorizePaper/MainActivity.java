@@ -2,6 +2,7 @@ package com.Mosa_true.MemorizePaper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view){
             int id = view.getId();
             if (id == R.id.readButton){
-                
+                startActivity(new Intent(MainActivity.this, ReaderActivity.class));
             } else if (id == R.id.writeButton) {
                 
             }

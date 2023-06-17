@@ -10,6 +10,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.QRCodeDetector;
+import org.opencv.objdetect.QRCodeEncoder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,22 @@ public class QRCodeHandler {
         points.release();
         return mat;
     }
+
+    public List<Mat> encodeBytesToQRMatList(byte[] compressedBytes){
+        List<Mat> qrMatList = new ArrayList<>();
+        String compressedData = new String(compressedBytes);
+        QRCodeEncoder qrCodeEncoder = QRCodeEncoder.create();
+        qrCodeEncoder.encodeStructuredAppend(compressedData, qrMatList);
+        return qrMatList;
+    }
+
+    public void joinMats(List<Mat> matList){
+        for(int i = 0; i < matList.size(); i++){
+            Mat mat = matList.get(i);
+            Log.i("MatSize", "width:" + mat.width() + "height:" + mat.height());
+        }
+    }
+
     public Bitmap convertMatToBitmap(Mat mat){
         Bitmap bitmap = Bitmap.createBitmap(mat.width(), mat.height(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(mat, bitmap);

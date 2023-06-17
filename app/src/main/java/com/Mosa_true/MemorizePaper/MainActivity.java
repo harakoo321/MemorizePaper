@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             if (id == R.id.readButton){
                 startActivity(new Intent(MainActivity.this, ReaderActivity.class));
             } else if (id == R.id.writeButton) {
-                
+                startActivity(new Intent(MainActivity.this, WriterActivity.class));
             }
         }
     }

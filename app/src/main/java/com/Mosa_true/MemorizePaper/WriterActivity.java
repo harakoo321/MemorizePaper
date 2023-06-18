@@ -4,34 +4,32 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.print.PrintHelper;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.github.luben.zstd.Zstd;
 
 import org.apache.commons.compress.utils.IOUtils;
-import org.opencv.objdetect.QRCodeEncoder;
+import org.opencv.core.Mat;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WriterActivity extends AppCompatActivity {
     private ArrayAdapter<String> arrayAdapter;
@@ -48,6 +46,7 @@ public class WriterActivity extends AppCompatActivity {
     }
 
     private class ListItemClickListener implements AdapterView.OnItemClickListener{
+        private QRCodeHandler qrCodeHandler = new QRCodeHandler();
         private final ActivityResultLauncher<String> filePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
@@ -81,9 +80,6 @@ public class WriterActivity extends AppCompatActivity {
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
-                        byte[] compressedBytes = Zstd.compress(bytedata, 16);
-                        QRCodeHandler qrCodeHandler = new QRCodeHandler();
-                        qrCodeHandler.joinMats(qrCodeHandler.encodeBytesToQRMatList(compressedBytes));
                     }
                 }
         );
@@ -92,7 +88,55 @@ public class WriterActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int pos, long id){
             Log.i("ClickedPos", "" + pos);
             if (pos == 0){
-                filePickerLauncher.launch("*/*");
+                //filePickerLauncher.launch("*/*");
+                //while (new FileInputStream().read(filebytes, 0, 8191) != -1) {
+
+                //}
+                String hoge = "https://fast.com";
+                byte[] filebytes = hoge.getBytes();
+
+                int fileSize = filebytes.length;
+                Log.i("Writer", "originalSize:" + fileSize);
+                byte[] originalSize = ByteBuffer.allocate(4).putInt(fileSize).array();
+                byte[] compressedBytes = Zstd.compress(filebytes, 1);
+                int len = compressedBytes.length;
+                byte[] compressedBytes2 = new byte[len + 4];
+                System.arraycopy(originalSize, 0, compressedBytes2, 0, 4);
+                System.arraycopy(compressedBytes, 0, compressedBytes2, 4, len);
+                List<Mat> matList = new ArrayList<>();
+                int len2 = compressedBytes2.length;
+                int qrNum = len2 / 270;
+                int qrLast = len2 % 270;
+                if (qrLast != 0) qrNum++;
+                if (!(qrNum > 16)) {
+                    for (int i = 0; i < qrNum; i++) {
+                        byte[] divBytes;
+                        if(qrLast != 0 && i == qrNum - 1) {
+                            divBytes = new byte[qrLast + 1];
+                            byte[] header = new byte[1];
+                            header[0] = (byte) (qrNum - 1 << 4 | qrNum - 1);
+                            Log.i("header", "header:" + header[0]);
+                            System.arraycopy(header, 0, divBytes, 0, 1);
+                            System.arraycopy(compressedBytes2, i * 271, divBytes, 1, qrLast);
+                        }else {
+                            divBytes = new byte[271];
+                            byte[] header = new byte[1];
+                            header[0] = (byte) (i << 4 | qrNum - 1);
+                            Log.i("header", "header:" + header[0]);
+                            System.arraycopy(header, 0, divBytes, 0, 1);
+                            System.arraycopy(compressedBytes2, i * 271, divBytes, 1, 270);
+                        }
+                        String qrString = new String(divBytes);
+                        matList.add(qrCodeHandler.encodeBytesToQRMat(qrString.getBytes()));
+                    }
+                }
+                Mat mat = qrCodeHandler.mergeMatList(matList);
+                Bitmap bitmap = qrCodeHandler.convertMatToBitmap(mat);
+                PrintHelper photoPrinter = new PrintHelper(getBaseContext());
+                photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+                photoPrinter.printBitmap("test print", bitmap);
+            }else {
+                Toast.makeText(WriterActivity.this, "ファイルが大きすぎ", Toast.LENGTH_LONG).show();
             }
         }
 

@@ -2,6 +2,7 @@
     <string name="app_name">MemorizePaper</string>
     <string name="write_data">データの書き込み</string>
     <string name="read_data">データの読み込み</string>
-    <string name="add_file">+ファイルを追加</string>
+    <string name="select_file">ファイルを選択...</string>
+    <string name="print_file">印刷</string>
     <string name="shot_button">撮影</string>
 </resources>

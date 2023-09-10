@@ -69,7 +69,7 @@ public class ReaderActivity extends CameraActivity implements CameraBridgeViewBa
     }
 
     private Mat mMat;
-    private QRCodeHandler qrCodeHandler = new QRCodeHandler();
+    private QRCodeReader qrCodeHandler = new QRCodeReader();
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         synchronized (mMat){
@@ -87,7 +87,7 @@ public class ReaderActivity extends CameraActivity implements CameraBridgeViewBa
                 mat = mMat.clone();
             }
             Log.i("shot", "width:" + mat.width() + " height:" + mat.height());
-            QRCodeHandler qrCodeHandler = new QRCodeHandler();
+            QRCodeReader qrCodeHandler = new QRCodeReader();
             List<String> readData = qrCodeHandler.detectAndDecodeQRMulti(mat);
             int originalSize = 0;
             int qrSum = (int)(readData.get(0).getBytes()[0] & (byte)15) + 1;

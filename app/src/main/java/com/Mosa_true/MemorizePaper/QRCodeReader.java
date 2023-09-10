@@ -15,7 +15,7 @@ import org.opencv.objdetect.QRCodeEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QRCodeHandler {
+public class QRCodeReader {
 
     public Mat detectQRMulti(Mat mat) {
         QRCodeDetector qrCodeDetector = new QRCodeDetector();

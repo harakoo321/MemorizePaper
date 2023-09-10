@@ -4,6 +4,8 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.print.PrintHelper;
+
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -12,9 +14,11 @@ import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import com.github.luben.zstd.Zstd;
+
 import org.opencv.core.Mat;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,7 +39,7 @@ public class WriterActivity extends AppCompatActivity {
 
     private class ButtonClickListener implements View.OnClickListener{
         private QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        private Bitmap bitmap;
+        private Bitmap qrCode;
         private final ActivityResultLauncher<String> filePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
@@ -45,7 +49,11 @@ public class WriterActivity extends AppCompatActivity {
                         TextView fileNameView = findViewById(R.id.file_name);
                         fileNameView.setText(readFileNameFromUri(result));
                         try {
-                            Log.i("FilePicker", "data:" + readTextFromUri(result));
+                            Mat qrMat = qrCodeWriter.encodeStringToQRMat(readDataFromUri(result));
+                            qrCode = qrCodeWriter.convertMatToBitmap(qrMat);
+                            ImageView imageView = findViewById(R.id.qrCodeView);
+                            imageView.setImageBitmap(qrCode);
+                            imageView.setVisibility(ImageView.VISIBLE);
                         }catch (IOException e){
                             Log.e("FilePicker", "" + e);
                         }
@@ -59,7 +67,9 @@ public class WriterActivity extends AppCompatActivity {
             if(id == R.id.file_select_button){
                 filePickerLauncher.launch("*/*");
             } else if (id == R.id.print_button) {
-
+                PrintHelper photoPrinter = new PrintHelper(getBaseContext());
+                photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+                photoPrinter.printBitmap("test print", qrCode);
             }
         }
 
@@ -72,7 +82,7 @@ public class WriterActivity extends AppCompatActivity {
             return fileName;
         }
 
-        private String readTextFromUri(Uri uri) throws IOException {
+        private String readDataFromUri(Uri uri) throws IOException {
             StringBuilder stringBuilder = new StringBuilder();
             try (InputStream inputStream =
                          getContentResolver().openInputStream(uri);

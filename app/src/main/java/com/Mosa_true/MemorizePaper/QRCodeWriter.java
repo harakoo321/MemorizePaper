@@ -10,6 +10,13 @@ import org.opencv.objdetect.QRCodeEncoder;
 import java.util.List;
 
 public class QRCodeWriter {
+    public Mat encodeStringToQRMat(String data){
+        Mat qrMat = new Mat();
+        QRCodeEncoder qrCodeEncoder = QRCodeEncoder.create();
+        qrCodeEncoder.encode(data, qrMat);
+        return qrMat;
+    }
+
     public Mat encodeBytesToQRMat(byte[] compressedBytes){
         Mat qrMat = new Mat();
         String compressedData = new String(compressedBytes);
@@ -25,6 +32,7 @@ public class QRCodeWriter {
         for(int i = 0; i < matList.size(); i++){
             matList.get(i).copyTo(mat.submat((i / 4) * (qrSize + 20), qrSize, i * (qrSize + 20), qrSize));
         }
+        matList = null;
         return mat;
     }
 

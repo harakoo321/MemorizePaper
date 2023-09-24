@@ -11,11 +11,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.opencv.core.Mat;
 
@@ -38,24 +38,29 @@ public class WriterActivity extends AppCompatActivity {
     }
 
     private class ButtonClickListener implements View.OnClickListener{
-        private QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        private QRCodeWriter qrCodeWriter = QRCodeWriter.getInstance();
         private Bitmap qrCode;
         private final ActivityResultLauncher<String> filePickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri result) {
-                        Log.i("FilePicker", "loaded! :" + result.toString());
-                        TextView fileNameView = findViewById(R.id.file_name);
-                        fileNameView.setText(readFileNameFromUri(result));
-                        try {
-                            Mat qrMat = qrCodeWriter.encodeStringToQRMat(readDataFromUri(result));
-                            qrCode = qrCodeWriter.convertMatToBitmap(qrMat);
-                            ImageView imageView = findViewById(R.id.qrCodeView);
-                            imageView.setImageBitmap(qrCode);
-                            imageView.setVisibility(ImageView.VISIBLE);
-                        }catch (IOException e){
-                            Log.e("FilePicker", "" + e);
+                        if (result != null) {
+                            TextView fileNameView = findViewById(R.id.file_name);
+                            fileNameView.setText(readFileNameFromUri(result));
+                            try {
+                                Mat qrMat = qrCodeWriter.encodeStringToQRMat(readDataFromUri(result));
+                                qrCode = qrCodeWriter.convertMatToBitmap(qrMat);
+                                ImageView imageView = findViewById(R.id.qrCodeView);
+                                imageView.setImageBitmap(qrCode);
+                                imageView.setVisibility(ImageView.VISIBLE);
+                            }catch (IOException e){
+                                Toast.makeText(
+                                        WriterActivity.this,
+                                        R.string.io_exception,
+                                        Toast.LENGTH_SHORT
+                                ).show();
+                            }
                         }
                     }
                 }

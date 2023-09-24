@@ -5,4 +5,5 @@
     <string name="select_file">ファイルを選択...</string>
     <string name="print_file">印刷</string>
     <string name="shot_button">撮影</string>
+    <string name="io_exception">選択されたファイルを読み取れませんでした。</string>
 </resources>

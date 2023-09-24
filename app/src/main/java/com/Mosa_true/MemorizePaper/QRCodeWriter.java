@@ -10,18 +10,18 @@ import org.opencv.objdetect.QRCodeEncoder;
 import java.util.List;
 
 public class QRCodeWriter {
+    private static QRCodeWriter qrCodeWriter;
+    private QRCodeWriter() {}
+
+    public static QRCodeWriter getInstance() {
+        if(qrCodeWriter == null) qrCodeWriter = new QRCodeWriter();
+        return qrCodeWriter;
+    }
+
     public Mat encodeStringToQRMat(String data){
         Mat qrMat = new Mat();
         QRCodeEncoder qrCodeEncoder = QRCodeEncoder.create();
         qrCodeEncoder.encode(data, qrMat);
-        return qrMat;
-    }
-
-    public Mat encodeBytesToQRMat(byte[] compressedBytes){
-        Mat qrMat = new Mat();
-        String compressedData = new String(compressedBytes);
-        QRCodeEncoder qrCodeEncoder = QRCodeEncoder.create();
-        qrCodeEncoder.encode(compressedData, qrMat);
         return qrMat;
     }
 

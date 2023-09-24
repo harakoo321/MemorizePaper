@@ -25,7 +25,6 @@ import java.util.Map;
 
 public class ReaderActivity extends CameraActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
     private CameraBridgeViewBase mOpenCvCameraView;
-    private Data data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +75,8 @@ public class ReaderActivity extends CameraActivity implements CameraBridgeViewBa
             mMat = inputFrame.rgba();    //color
         }
         Log.i("OnCameraFrame", "Got!:" + mMat.width() + ", " + mMat.height());
-        return qrCodeHandler.detectQRMulti(mMat);
+        //return qrCodeHandler.detectQRMulti(mMat);
+        return mMat;
     }
 
     private class ShotButtonClickListener implements View.OnClickListener{

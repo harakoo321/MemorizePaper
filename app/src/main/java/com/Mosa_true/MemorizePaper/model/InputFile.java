@@ -16,9 +16,6 @@ public class InputFile {
     private final String _fileData;
 
     public InputFile(Uri inputFileUri, Context context) throws IOException, NullPointerException {
-        if(inputFileUri == null || context == null) {
-            throw new NullPointerException();
-        }
         _fileName = setFileName(inputFileUri, context);
         _fileData = setFileData(inputFileUri, context);
     }

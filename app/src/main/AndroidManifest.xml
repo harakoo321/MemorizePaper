@@ -19,13 +19,13 @@
         android:theme="@style/Theme.MemorizePaper"
         tools:targetApi="31">
         <activity
-            android:name=".WriterActivity"
+            android:name=".view.WriterActivity"
             android:exported="false" />
         <activity
-            android:name=".ReaderActivity"
+            android:name=".view.ReaderActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

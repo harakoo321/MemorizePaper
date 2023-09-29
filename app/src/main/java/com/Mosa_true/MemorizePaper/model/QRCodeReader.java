@@ -1,4 +1,4 @@
-package com.Mosa_true.MemorizePaper;
+package com.Mosa_true.MemorizePaper.model;
 
 import android.graphics.Bitmap;
 import android.util.Log;

@@ -1,4 +1,4 @@
-package com.Mosa_true.MemorizePaper;
+package com.Mosa_true.MemorizePaper.view;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.Mosa_true.MemorizePaper.R;
 import com.Mosa_true.MemorizePaper.model.InputFile;
 import com.Mosa_true.MemorizePaper.model.QRCodeWriter;
 

@@ -1,4 +1,4 @@
-package com.Mosa_true.MemorizePaper;
+package com.Mosa_true.MemorizePaper.view;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -6,6 +6,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.Mosa_true.MemorizePaper.model.QRCodeReader;
+import com.Mosa_true.MemorizePaper.R;
 import com.github.luben.zstd.Zstd;
 
 import org.opencv.android.CameraActivity;

@@ -16,8 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.Mosa_true.MemorizePaper.R;
-import com.Mosa_true.MemorizePaper.model.InputFile;
-import com.Mosa_true.MemorizePaper.model.QRCodeWriter;
+import com.Mosa_true.MemorizePaper.model.QRCodeWriterRepository;
 
 import java.io.IOException;
 
@@ -41,13 +40,13 @@ public class WriterActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(Uri result) {
                         if (result != null) {
-                            TextView fileNameView = findViewById(R.id.file_name);
                             try {
-                                InputFile inputFile = new InputFile(result, getApplicationContext());
-                                fileNameView.setText(inputFile.getFileName());
-                                QRCodeWriter qrCodeWriter = new QRCodeWriter(inputFile.getFileData());
-                                qrCode = qrCodeWriter.getQRCode();
+                                TextView fileNameView = findViewById(R.id.file_name);
                                 ImageView imageView = findViewById(R.id.qrCodeView);
+                                QRCodeWriterRepository qrCodeWriterRepository =
+                                        new QRCodeWriterRepository(result, getApplicationContext());
+                                fileNameView.setText(qrCodeWriterRepository.getFileName());
+                                qrCode = qrCodeWriterRepository.getQRCode();
                                 imageView.setImageBitmap(qrCode);
                                 imageView.setVisibility(ImageView.VISIBLE);
                             }

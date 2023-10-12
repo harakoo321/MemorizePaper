@@ -12,17 +12,17 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 
 public class InputFile {
-    private final String _fileName;
-    private final String _fileData;
+    private final String fileName;
+    private final String fileData;
 
     public InputFile(Uri inputFileUri, Context context) throws IOException, NullPointerException {
-        _fileName = setFileName(inputFileUri, context);
-        _fileData = setFileData(inputFileUri, context);
+        fileName = setFileName(inputFileUri, context);
+        fileData = setFileData(inputFileUri, context);
     }
 
     private String setFileName(Uri inputFileUri, Context context){
         Cursor resultCursor = context.getContentResolver().query(inputFileUri, null, null, null, null);
-        int nameIndex = resultCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        int nameIndex = Objects.requireNonNull(resultCursor).getColumnIndex(OpenableColumns.DISPLAY_NAME);
         resultCursor.moveToFirst();
         String fileName = resultCursor.getString(nameIndex);
         resultCursor.close();
@@ -44,10 +44,10 @@ public class InputFile {
     }
 
     public String getFileName() {
-        return _fileName;
+        return fileName;
     }
 
     public String getFileData() {
-        return _fileData;
+        return fileData;
     }
 }

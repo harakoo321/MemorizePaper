@@ -7,20 +7,20 @@ import android.net.Uri;
 import java.io.IOException;
 
 public class QRCodeWriterRepository {
-    private final InputFile _inputFile;
-    private final QRCodeWriter _qrCodeWriter;
+    private final InputFile inputFile;
+    private final QRCodeWriter qrCodeWriter;
 
     public QRCodeWriterRepository(Uri inputFileUri, Context context)
             throws IOException, IllegalArgumentException, NullPointerException {
-        _inputFile = new InputFile(inputFileUri, context);
-        _qrCodeWriter = new QRCodeWriter(_inputFile.getFileData());
+        inputFile = new InputFile(inputFileUri, context);
+        qrCodeWriter = new QRCodeWriter(inputFile.getFileData());
     }
 
     public String getFileName() {
-        return _inputFile.getFileName();
+        return inputFile.getFileName();
     }
 
     public Bitmap getQRCode() {
-        return _qrCodeWriter.getQRCode();
+        return qrCodeWriter.getQRCode();
     }
 }
